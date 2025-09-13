@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopify Execution Framework</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+        
+        /* Decision Matrix */
+        .decision-matrix {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .matrix-title {
+            color: #f97316;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .decision-rule {
+            background: #0f172a;
+            border-left: 4px solid #f97316;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+        
+        .condition {
+            color: #60a5fa;
+            font-weight: 700;
+        }
+        
+        .action {
+            color: #86efac;
+            font-weight: 700;
+        }
+        
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        /* Phase Cards */
+        .phase-card {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .phase-header {
+            background: #334155;
+            padding: 20px;
+            border-bottom: 2px solid #475569;
+        }
+        
+        .phase-day {
+            background: #dc2626;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .phase-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #f1f5f9;
+        }
+        
+        .phase-subtitle {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+        
+        .phase-content {
+            padding: 25px;
+        }
+        
+        /* Task Items */
+        .task-group {
+            margin-bottom: 25px;
+        }
+        
+        .task-group-title {
+            color: #f97316;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .task {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .task:hover {
+            border-color: #f97316;
+            transform: translateX(5px);
+        }
+        
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            accent-color: #22c55e;
+        }
+        
+        .task-text {
+            flex: 1;
+            color: #cbd5e1;
+        }
+        
+        .task-priority {
+            background: #dc2626;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 10px;
+        }
+        
+        .task-priority.medium {
+            background: #f97316;
+        }
+        
+        .task-priority.low {
+            background: #64748b;
+        }
+        
+        /* Metrics Dashboard */
+        .metrics-dashboard {
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .metrics-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        
+        .metric-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Tools Section */
+        .tools-section {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .tool-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.2s;
+        }
+        
+        .tool-card:hover {
+            border-color: #f97316;
+            transform: scale(1.02);
+        }
+        
+        .tool-name {
+            color: #f97316;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .tool-purpose {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        /* Content Sources */
+        .content-sources {
+            background: #1e293b;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .source-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .source-item {
+            background: #0f172a;
+            border-left: 4px solid #22c55e;
+            padding: 12px 15px;
+            border-radius: 6px;
+        }
+        
+        /* Critical Rules */
+        .critical-rules {
+            background: #7f1d1d;
+            border: 2px solid #dc2626;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .rule {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .rule-icon {
+            background: #dc2626;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .rule-text {
+            color: #fecaca;
+            line-height: 1.5;
+        }
+        
+        /* Progress Tracker */
+        .progress-tracker {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e293b;
+            border: 2px solid #f97316;
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 250px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .progress-title {
+            color: #f97316;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .progress-bar {
+            background: #0f172a;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #22c55e, #10b981);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .progress-status {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        /* Responsive */
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .source-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-tracker {
+                bottom: 20px;
+                right: 20px;
+                left: 20px;
+                min-width: auto;
+            }
+        }
+        
+        /* Completed State */
+        .task.completed {
+            background: #065f46;
+            border-color: #22c55e;
+        }
+        
+        .task.completed .task-text {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>SHOPIFY EXECUTION FRAMEWORK</h1>
+            <p>Theme installed → Store live</p>
+        </div>
+        
+        <!-- Decision Matrix -->
+        <div class="decision-matrix">
+            <div class="matrix-title">Automatic Decision Matrix</div>
+            
+            <div class="decision-rule">
+                <span class="condition">IF</span> product &lt; $50 
+                <span class="action">→ SKIP</span> bundles, 
+                <span class="action">FOCUS</span> on cart addons + social proof
+            </div>
+            
+            <div class="decision-rule">
+                <span class="condition">IF</span> product &gt; $150 
+                <span class="action">→ MANDATORY</span> bundles + extended warranty + premium shipping
+            </div>
+            
+            <div class="decision-rule">
+                <span class="condition">IF</span> conversion &lt; 1.5% 
+                <span class="action">→ PROBLEM</span> trust (add reviews + badges), 
+                <span class="action">NOT</span> pricing
+            </div>
+            
+            <div class="decision-rule">
+                <span class="condition">IF</span> average cart &lt; $80 
+                <span class="action">→ IMPLEMENT</span> free shipping at $100 + aggressive upsells
+            </div>
+            
+            <div class="decision-rule">
+                <span class="condition">IF</span> mobile bounce rate &gt; 60% 
+                <span class="action">→ EMERGENCY</span> fix mobile UX first
+            </div>
+        </div>
+        
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Phase 1: Foundation -->
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-day">STEPS 1-2</div>
+                    <div class="phase-title">FOUNDATION SETUP</div>
+                    <div class="phase-subtitle">Base infrastructure + products</div>
+                </div>
+                <div class="phase-content">
+                    <div class="task-group">
+                        <div class="task-group-title">Initial Setup</div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Install pre-optimized theme</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Upload winning products (title + price)</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Legal pages (copy templates)</span>
+                            <span class="task-priority medium">MEDIUM</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Setup shipping zones</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                    </div>
+                    
+                    <div class="task-group">
+                        <div class="task-group-title">Product Structure</div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Create collections by type</span>
+                            <span class="task-priority medium">MEDIUM</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Define hero product (best-seller)</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Setup variants if applicable</span>
+                            <span class="task-priority low">LOW</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 2: Content -->
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-day">STEPS 3-4</div>
+                    <div class="phase-title">CONTENT ACQUISITION</div>
+                    <div class="phase-subtitle">Images + videos + social proof</div>
+                </div>
+                <div class="phase-content">
+                    <div class="task-group">
+                        <div class="task-group-title">Visual Acquisition</div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Scrape 8-12 images/product from competitors</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Download 3-5 viral TikToks/product</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Generate AI variations if needed</span>
+                            <span class="task-priority medium">MEDIUM</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Optimize images (compression)</span>
+                            <span class="task-priority medium">MEDIUM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="task-group">
+                        <div class="task-group-title">Social Proof</div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Import/create 10+ reviews with photos</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Setup video testimonials</span>
+                            <span class="task-priority medium">MEDIUM</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Setup trust badges</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 3: Optimization -->
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-day">STEPS 5-6</div>
+                    <div class="phase-title">CONVERSION OPTIMIZATION</div>
+                    <div class="phase-subtitle">Apps + upsells + AOV boost</div>
+                </div>
+                <div class="phase-content">
+                    <div class="task-group">
+                        <div class="task-group-title">Essential Apps</div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Judge.me/Loox (reviews)</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Fomo/Sales Pop (urgency)</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">ReConvert (post-purchase)</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Cart drawer upsell</span>
+                            <span class="task-priority medium">MEDIUM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="task-group">
+                        <div class="task-group-title">AOV Optimization</div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Create bundles (-20% vs individual)</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Setup free shipping threshold</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Setup express shipping (+$9.99)</span>
+                            <span class="task-priority medium">MEDIUM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Phase 4: Launch -->
+            <div class="phase-card">
+                <div class="phase-header">
+                    <div class="phase-day">STEP 7</div>
+                    <div class="phase-title">TESTING & LAUNCH</div>
+                    <div class="phase-subtitle">Final validation + go live</div>
+                </div>
+                <div class="phase-content">
+                    <div class="task-group">
+                        <div class="task-group-title">Critical Tests</div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Full mobile test (60%+ traffic)</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Complete checkout flow test</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Check load speed (&lt;3s)</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Test upsell sequences</span>
+                            <span class="task-priority medium">MEDIUM</span>
+                        </div>
+                    </div>
+                    
+                    <div class="task-group">
+                        <div class="task-group-title">Go Live</div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Setup Google Analytics + FB Pixel</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Remove password protection</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                        <div class="task">
+                            <input type="checkbox" class="task-checkbox">
+                            <span class="task-text">Launch + share confirmation</span>
+                            <span class="task-priority">CRITICAL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Metrics Dashboard -->
+        <div class="metrics-dashboard">
+            <div class="metrics-title">Validation KPIs</div>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">2-4%</div>
+                    <div class="metric-label">Conversion Rate</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">&lt;3s</div>
+                    <div class="metric-label">Load Time</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">+40%</div>
+                    <div class="metric-label">AOV Increase</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">&lt;50%</div>
+                    <div class="metric-label">Cart Abandon</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">8+</div>
+                    <div class="metric-label">Images/Product</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">60%+</div>
+                    <div class="metric-label">Mobile Traffic</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tools Section -->
+        <div class="tools-section">
+            <div class="matrix-title">Mandatory Tech Stack</div>
+            <div class="tools-grid">
+
+                <div class="tool-card">
+                    <div class="tool-name">Judge.me / Loox</div>
+                    <div class="tool-purpose">Photo reviews</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-name">ReConvert / AfterSell</div>
+                    <div class="tool-purpose">Post-purchase upsells</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-name">Fomo / Sales Pop</div>
+                    <div class="tool-purpose">Social proof notifications</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-name">Cart Drawer</div>
+                    <div class="tool-purpose">In-cart upsells</div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-name">TikTok Downloader</div>
+                    <div class="tool-purpose">UGC content acquisition</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content Sources -->
+        <div class="content-sources">
+            <div class="matrix-title">Content Sources (Priority Order)</div>
+            <div class="source-list">
+                <div class="source-item">Scrape direct competitor sites</div>
+                <div class="source-item">TikTok videos (download without watermark)</div>
+                <div class="source-item">Amazon reviews with photos</div>
+                <div class="source-item">AliExpress product galleries</div>
+                <div class="source-item">Midjourney/DALL-E variations</div>
+                <div class="source-item">Custom Canva templates</div>
+            </div>
+        </div>
+        
+        <!-- Critical Rules -->
+        <div class="critical-rules">
+            <div class="matrix-title">Non-Negotiable Rules</div>
+            <div class="rule">
+                <div class="rule-icon">!</div>
+                <div class="rule-text">No perfectionism. "Good enough" &gt; perfect. Store can be improved after launch.</div>
+            </div>
+            <div class="rule">
+                <div class="rule-icon">!</div>
+                <div class="rule-text">Mobile first ALWAYS. If it doesn’t work on mobile, it doesn’t work at all.</div>
+            </div>
+            <div class="rule">
+                <div class="rule-icon">!</div>
+                <div class="rule-text">Copy first, create later. Use existing content for speed, create custom after validation.</div>
+            </div>
+            <div class="rule">
+                <div class="rule-icon">!</div>
+                <div class="rule-text">Data &gt; opinions. Every decision based on metrics, not "I think".</div>
+            </div>
+            <div class="rule">
+                <div class="rule-icon">!</div>
+                <div class="rule-text">AOV optimization mandatory. A store without upsells = money left on the table.</div>
+            </div>
+        </div>
+        
+        <!-- Progress Tracker -->
+        <div class="progress-tracker">
+            <div class="progress-title">OVERALL PROGRESS</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+            <div class="progress-status" id="progressStatus">0/31 tasks completed</div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.task-checkbox');
+            const progressFill = document.getElementById('progressFill');
+            const progressStatus = document.getElementById('progressStatus');
+            const totalTasks = checkboxes.length;
+            let completedTasks = 0;
+            
+            // Load saved progress
+            checkboxes.forEach((checkbox, index) => {
+                const saved = localStorage.getItem(`shopify_task_${index}`);
+                if (saved === 'true') {
+                    checkbox.checked = true;
+                    checkbox.closest('.task').classList.add('completed');
+                    completedTasks++;
+                }
+            });
+            
+            updateProgress();
+            
+            // Handle checkbox changes
+            checkboxes.forEach((checkbox, index) => {
+                checkbox.addEventListener('change', function() {
+                    localStorage.setItem(`shopify_task_${index}`, this.checked);
+                    
+                    if (this.checked) {
+                        this.closest('.task').classList.add('completed');
+                        completedTasks++;
+                    } else {
+                        this.closest('.task').classList.remove('completed');
+                        completedTasks--;
+                    }
+                    
+                    updateProgress();
+                });
+            });
+            
+            function updateProgress() {
+                const percentage = Math.round((completedTasks / totalTasks) * 100);
+                progressFill.style.width = percentage + '%';
+                progressFill.textContent = percentage + '%';
+                progressStatus.textContent = `${completedTasks}/${totalTasks} tasks completed`;
+                
+                // Milestones
+                if (percentage === 100) {
+                    progressFill.style.background = 'linear-gradient(90deg, #dc2626, #f97316)';
+                    setTimeout(() => {
+                        alert('🚀 STORE READY! Move to traffic + optimization phase.');
+                    }, 500);
+                } else if (percentage >= 75) {
+                    progressStatus.textContent += ' - Almost there!';
+                } else if (percentage >= 50) {
+                    progressStatus.textContent += ' - On track';
+                } else if (percentage >= 25) {
+                    progressStatus.textContent += ' - Good start';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
