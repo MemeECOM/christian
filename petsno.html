@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetsNowy Product Analysis - Executive Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .executive-summary {
+            background: #f8f9fa;
+            border-left: 5px solid #FF6B35;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+        
+        .score-card {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .product-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #FF6B35;
+        }
+        
+        .score-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .score-bar {
+            width: 60%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .score-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .score-high { background: linear-gradient(90deg, #4CAF50, #8BC34A); }
+        .score-medium { background: linear-gradient(90deg, #FF9800, #FFC107); }
+        .score-low { background: linear-gradient(90deg, #F44336, #FF5722); }
+        
+        .score-text {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .criteria-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .criteria-table th {
+            background: #FF6B35;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .criteria-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .criteria-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .pass { 
+            color: #4CAF50; 
+            font-weight: 600;
+        }
+        
+        .fail { 
+            color: #F44336; 
+            font-weight: 600;
+        }
+        
+        .section {
+            margin: 40px 0;
+        }
+        
+        .section h2 {
+            color: #FF6B35;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .section h3 {
+            color: #333;
+            margin: 25px 0 15px 0;
+            font-size: 1.3em;
+        }
+        
+        .recommendation-box {
+            background: linear-gradient(135deg, #4CAF50, #8BC34A);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .recommendation-box h3 {
+            color: white;
+            margin-top: 0;
+        }
+        
+        .risk-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .competitive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .competitor-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #FF6B35;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .metric strong {
+            color: #FF6B35;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .criteria-table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PetsNowy Product Analysis</h1>
+            <p>Market Viability Assessment & Strategic Recommendations</p>
+        </div>
+        
+        <div class="content">
+            <div class="executive-summary">
+                <h2>Executive Summary</h2>
+                <p><strong>Bottom Line:</strong> All three products meet minimum viability criteria. Air purifier offers highest growth potential with 15% CAGR targeting $6B market by 2033.</p>
+                <br>
+                <p><strong>Immediate Action:</strong> Prioritize air purifier launch, maintain litter box as cash cow, pivot dryer box to B2B channel.</p>
+            </div>
+            
+            <div class="score-card">
+                <div class="product-card">
+                    <div class="product-title">🌬️ Air Purifier for Pets</div>
+                    <div class="score-display">
+                        <div class="score-bar">
+                            <div class="score-fill score-high" style="width: 85%"></div>
+                        </div>
+                        <div class="score-text">85%</div>
+                    </div>
+                    <div class="metric">
+                        <span>Market Size:</span> <strong>$2B → $6B</strong>
+                    </div>
+                    <div class="metric">
+                        <span>CAGR:</span> <strong>15%</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Recommendation:</span> <strong class="pass">STRONG GO</strong>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-title">🚽 SNOW+ Litter Box</div>
+                    <div class="score-display">
+                        <div class="score-bar">
+                            <div class="score-fill score-high" style="width: 83%"></div>
+                        </div>
+                        <div class="score-text">83%</div>
+                    </div>
+                    <div class="metric">
+                        <span>Market Size:</span> <strong>$701M → $1.2B</strong>
+                    </div>
+                    <div class="metric">
+                        <span>CAGR:</span> <strong>7.8%</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Recommendation:</span> <strong class="pass">STRONG GO</strong>
+                    </div>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-title">💨 SMILE Dryer Box</div>
+                    <div class="score-display">
+                        <div class="score-bar">
+                            <div class="score-fill score-medium" style="width: 65%"></div>
+                        </div>
+                        <div class="score-text">65%</div>
+                    </div>
+                    <div class="metric">
+                        <span>Market Size:</span> <strong>$534M → $1.1B</strong>
+                    </div>
+                    <div class="metric">
+                        <span>CAGR:</span> <strong>8.7%</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Recommendation:</span> <strong class="pass">MODERATE GO</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Detailed 6-Criteria Analysis</h2>
+                
+                <h3>SNOW+ Self-Cleaning Litter Box</h3>
+                <table class="criteria-table">
+                    <thead>
+                        <tr>
+                            <th>Criteria</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Key Evidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Market Potential</td>
+                            <td>9/10</td>
+                            <td class="pass">PASS</td>
+                            <td>20+ active FB campaigns, $701M market growing to $1.2B</td>
+                        </tr>
+                        <tr>
+                            <td>Evergreen Demand</td>
+                            <td>8/10</td>
+                            <td class="pass">PASS</td>
+                            <td>Non-seasonal pet care, 66% US household penetration</td>
+                        </tr>
+                        <tr>
+                            <td>Problem Solving</td>
+                            <td>9/10</td>
+                            <td class="pass">PASS</td>
+                            <td>87% positive reviews on odor control solution</td>
+                        </tr>
+                        <tr>
+                            <td>Quality</td>
+                            <td>7/10</td>
+                            <td class="pass">PASS</td>
+                            <td>4.7/5 rating (895 reviews), size constraint issues</td>
+                        </tr>
+                        <tr>
+                            <td>Profit Margin</td>
+                            <td>9/10</td>
+                            <td class="pass">PASS</td>
+                            <td>64-72% margin ($200-250 cost, $559-699 retail)</td>
+                        </tr>
+                        <tr>
+                            <td>Upsell Potential</td>
+                            <td>8/10</td>
+                            <td class="pass">PASS</td>
+                            <td>Recurring consumables: waste liners, fragrance boxes</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>Air Purifier for Pets</h3>
+                <table class="criteria-table">
+                    <thead>
+                        <tr>
+                            <th>Criteria</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Key Evidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Market Potential</td>
+                            <td>10/10</td>
+                            <td class="pass">PASS</td>
+                            <td>$2B market → $6B by 2033, specialized positioning</td>
+                        </tr>
+                        <tr>
+                            <td>Evergreen Demand</td>
+                            <td>9/10</td>
+                            <td class="pass">PASS</td>
+                            <td>Health-driven, 10% population has pet allergies</td>
+                        </tr>
+                        <tr>
+                            <td>Problem Solving</td>
+                            <td>9/10</td>
+                            <td class="pass">PASS</td>
+                            <td>TiO2 System differentiation, clear health problem</td>
+                        </tr>
+                        <tr>
+                            <td>Quality</td>
+                            <td>6/10</td>
+                            <td class="pass">PASS</td>
+                            <td>New product, advanced technology pending validation</td>
+                        </tr>
+                        <tr>
+                            <td>Profit Margin</td>
+                            <td>8/10</td>
+                            <td class="pass">PASS</td>
+                            <td>50-75% margin ($100-150 cost, $200-400 retail)</td>
+                        </tr>
+                        <tr>
+                            <td>Upsell Potential</td>
+                            <td>9/10</td>
+                            <td class="pass">PASS</td>
+                            <td>Filter replacements every 3-6 months</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="section">
+                <h2>Critical Issues Identified</h2>
+                
+                <div class="risk-box">
+                    <h3>⚠️ SNOW+ Litter Box</h3>
+                    <ul>
+                        <li><strong>Odor Leakage:</strong> 15% of reviews mention bag sealing issues</li>
+                        <li><strong>Size Constraints:</strong> 20% report too small for large cats</li>
+                        <li><strong>App Issues:</strong> 8% experience connectivity problems</li>
+                    </ul>
+                </div>
+                
+                <div class="risk-box">
+                    <h3>⚠️ SMILE Dryer Box</h3>
+                    <ul>
+                        <li><strong>Weak Upsell Model:</strong> Failed criterion - no recurring revenue</li>
+                        <li><strong>Limited Market Data:</strong> New product with insufficient validation</li>
+                        <li><strong>Complex Manufacturing:</strong> Lower margins due to dual motor system</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>Competitive Landscape</h2>
+                
+                <div class="competitive-grid">
+                    <div class="competitor-card">
+                        <h4>Litter-Robot (Whisker)</h4>
+                        <div class="metric">
+                            <span>Revenue:</span> <strong>$200M+ annual</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Price:</span> <strong>$699-799</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Position:</span> <strong>Market Leader</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="competitor-card">
+                        <h4>PetSafe (Radio Systems)</h4>
+                        <div class="metric">
+                            <span>Revenue:</span> <strong>$500M+ parent</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Price:</span> <strong>$299-599</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Position:</span> <strong>Mass Market</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="competitor-card">
+                        <h4>PETKIT</h4>
+                        <div class="metric">
+                            <span>Revenue:</span> <strong>$50M+ estimated</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Price:</span> <strong>$399-699</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Position:</span> <strong>Tech-Forward</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="recommendation-box">
+                <h3>Strategic Recommendations</h3>
+                <p><strong>Phase 1 (0-6 months):</strong> Launch air purifier aggressive pre-order campaign targeting allergy season</p>
+                <p><strong>Phase 2 (6-12 months):</strong> Expand litter box to Canada/UK/Australia markets</p>
+                <p><strong>Phase 3 (12-18 months):</strong> Pivot dryer box to B2B grooming salon channel</p>
+                <br>
+                <p><strong>Immediate Actions:</strong></p>
+                <ul>
+                    <li>Fix litter box bag sealing mechanism (address 15% complaint rate)</li>
+                    <li>Diversify supplier base (minimum 2 per product category)</li>
+                    <li>Develop comprehensive onboarding to reduce app setup issues</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>Market Expansion Priorities</h2>
+                
+                <h3>Tier 1 Markets (6-12 months)</h3>
+                <div class="competitive-grid">
+                    <div class="competitor-card">
+                        <h4>🇨🇦 Canada</h4>
+                        <div class="metric">
+                            <span>Pet Ownership:</span> <strong>57% households</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Advantage:</span> <strong>Similar regulations</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="competitor-card">
+                        <h4>🇬🇧 United Kingdom</h4>
+                        <div class="metric">
+                            <span>Pet Ownership:</span> <strong>49% households</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Advantage:</span> <strong>Premium acceptance</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="competitor-card">
+                        <h4>🇦🇺 Australia</h4>
+                        <div class="metric">
+                            <span>Pet Ownership:</span> <strong>69% households</strong>
+                        </div>
+                        <div class="metric">
+                            <span>Advantage:</span> <strong>Highest globally</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Confidential Analysis • PetsNowy Product Portfolio Assessment • 2025</p>
+        </div>
+    </div>
+</body>
+</html>
